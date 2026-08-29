@@ -63,24 +63,24 @@ export default function FarmerAnimalDetails({ role = "farmer" }) {
 
         {/* Top Header Card - Animal Information */}
         <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/80 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 font-extrabold text-2xl flex items-center justify-center shadow-inner">
+          <div className="flex items-center gap-4 min-w-0 flex-wrap">
+            <div className="w-16 h-16 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 font-extrabold text-2xl flex items-center justify-center shadow-inner shrink-0">
               {animal.id}
             </div>
-            <div>
-              <div className="flex items-center gap-3">
-                <h2 className="text-xl sm:text-2xl font-black text-slate-900">{animal.id} - {animal.tag}</h2>
+            <div className="min-w-0">
+              <div className="flex items-center gap-3 flex-wrap">
+                <h2 className="text-xl sm:text-2xl font-black text-slate-900 break-words">{animal.id} - {animal.tag}</h2>
                 <RiskBadge level={animal.riskLevel} score={animal.riskScore} />
               </div>
-              <p className="text-xs sm:text-sm text-slate-500 mt-1">
+              <p className="text-xs sm:text-sm text-slate-500 mt-1 leading-relaxed break-words">
                 Breed: <strong>{animal.breed}</strong> • Age: <strong>{animal.age}</strong> • Lactation: <strong>{animal.lactation}</strong> • Daily Milk: <strong>{animal.milkYield} L</strong>
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 bg-slate-50 p-2 rounded-xl border border-slate-100 text-xs text-slate-600">
-            <Clock className="w-4 h-4 text-slate-400" />
-            <span>Last milking check: <strong>Today 06:30 AM</strong></span>
+          <div className="flex items-center gap-2 bg-slate-50 p-2 rounded-xl border border-slate-100 text-xs text-slate-600 max-w-full">
+            <Clock className="w-4 h-4 text-slate-400 shrink-0" />
+            <span className="break-words">Last milking check: <strong>Today 06:30 AM</strong></span>
           </div>
         </div>
 
@@ -133,7 +133,7 @@ export default function FarmerAnimalDetails({ role = "farmer" }) {
             <div className="mt-6 pt-4 border-t border-slate-100 flex items-start gap-2 text-[11px] text-slate-500">
               <Info className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
               <span>
-                AI shows possible health risk. It does not confirm or diagnose diseases.
+                AI shows possible health risk. It does not confirm or diagnose disease.
               </span>
             </div>
           </div>

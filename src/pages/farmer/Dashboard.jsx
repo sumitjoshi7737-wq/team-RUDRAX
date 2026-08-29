@@ -21,7 +21,10 @@ import {
 
 export default function FarmerDashboard() {
   const summary = getHerdSummary();
-  const attentionAnimals = animalsData.filter(a => a.riskScore >= 45); // Medium + High
+  const attentionAnimals = animalsData
+    .filter(a => a.riskScore >= 45)
+    .sort((a, b) => b.riskScore - a.riskScore)
+    .slice(0, 3);
   const recentAlerts = initialAlerts.slice(0, 3);
 
   return (
@@ -38,6 +41,9 @@ export default function FarmerDashboard() {
             </h2>
             <p className="text-xs sm:text-sm text-emerald-100/80 mt-1 max-w-xl">
               AI shows {summary.highRisk} animals with high risk and {summary.mediumRisk} animals that need attention.
+            </p>
+            <p className="text-xs sm:text-sm text-emerald-100/80 mt-2">
+              Milk yield is 4.2% lower than last week.
             </p>
           </div>
 

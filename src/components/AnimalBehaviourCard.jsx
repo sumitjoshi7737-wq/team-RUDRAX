@@ -50,25 +50,25 @@ export default function AnimalBehaviourCard({ behaviour }) {
           return (
             <div
               key={item.label}
-              className={`p-3.5 rounded-xl border flex items-center justify-between transition ${
+              className={`p-3.5 rounded-xl border flex items-center justify-between gap-2 transition ${
                 item.isWarning
                   ? 'border-amber-200 bg-amber-50/40 text-amber-900'
                   : 'border-slate-200/80 bg-slate-50/60 text-slate-800'
               }`}
             >
-              <div className="flex items-center gap-2.5">
-                <div className={`p-2 rounded-lg ${
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className={`p-2 rounded-lg shrink-0 ${
                   item.isWarning ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'
                 }`}>
                   <Icon className="w-4 h-4" />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">{item.label}</p>
-                  <p className="text-xs font-bold text-slate-800 mt-0.5">{item.value}</p>
+                  <p className="text-xs font-bold text-slate-800 mt-0.5 break-words">{item.value}</p>
                 </div>
               </div>
 
-              <div>
+              <div className="shrink-0">
                 {item.isWarning ? (
                   <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
                     <AlertTriangle className="w-3 h-3" />
@@ -86,8 +86,8 @@ export default function AnimalBehaviourCard({ behaviour }) {
         })}
       </div>
 
-      <div className="pt-2 border-t border-slate-100 text-[11px] text-slate-500 flex items-center justify-between">
-        <span>Behaviour is an observation and not a medical diagnosis.</span>
+      <div className="pt-2 border-t border-slate-100 text-[11px] text-slate-500 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+        <span>These are behaviour observations. They are only one health signal and do not confirm illness.</span>
         <span className="text-slate-400 font-medium">Updated during milking</span>
       </div>
     </div>

@@ -245,7 +245,7 @@ export default function Landing() {
       </section>
 
       {/* Data Flow Architecture Section */}
-      <section id="architecture" className="py-16 sm:py-20 bg-white border-t border-slate-200">
+      <section id="architecture" className="py-16 sm:py-20 bg-white border-t border-slate-200 scroll-mt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-12">
             <h2 className="text-xs uppercase font-bold tracking-widest text-emerald-600">System Flow</h2>
@@ -322,7 +322,7 @@ export default function Landing() {
 
             <div className="text-xs text-center md:text-right max-w-md text-slate-400">
               <p className="leading-relaxed">
-                Important: MastiGuard AI shows possible health risk. It does NOT diagnose or confirm diseases. It is an early monitoring tool to help you know when an animal may need attention.
+                Important: MastiGuard AI shows possible health risk. It does not confirm or diagnose disease.
               </p>
               <p className="mt-2 text-slate-500">© 2026 MastiGuard AI. All rights reserved.</p>
             </div>

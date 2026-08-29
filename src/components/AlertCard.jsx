@@ -40,41 +40,41 @@ export default function AlertCard({ alert, onMarkRead, basePath = "/farmer" }) {
 
   return (
     <div className={`p-4 rounded-xl border ${border} transition-all ${alert.read ? 'opacity-80' : 'shadow-sm'}`}>
-      <div className="flex items-start gap-3">
+      <div className="flex items-start gap-3 min-w-0">
         <div className={`p-2.5 rounded-xl shrink-0 ${iconBg}`}>
           <Icon className="w-5 h-5" />
         </div>
 
         <div className="flex-1 min-w-0">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2 min-w-0">
               <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${badgeBg}`}>
                 {alert.category}
               </span>
               {alert.animalId && (
-                <span className="text-xs font-semibold text-slate-700 bg-white border border-slate-200 px-1.5 py-0.5 rounded">
+                <span className="text-xs font-semibold text-slate-700 bg-white border border-slate-200 px-1.5 py-0.5 rounded max-w-full break-words">
                   Animal #{alert.animalId}
                 </span>
               )}
             </div>
 
-            <div className="flex items-center gap-1 text-xs text-slate-400">
+            <div className="flex items-center gap-1 text-xs text-slate-400 shrink-0">
               <Clock className="w-3.5 h-3.5" />
               <span>{alert.time}</span>
             </div>
           </div>
 
-          <h4 className="text-sm font-semibold text-slate-800 mt-1.5">
+          <h4 className="text-sm font-semibold text-slate-800 mt-1.5 break-words">
             {alert.title}
           </h4>
 
-          <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+          <p className="text-xs text-slate-600 mt-1 leading-relaxed break-words">
             {alert.description}
           </p>
 
           <div className="mt-3 pt-2.5 border-t border-slate-200/60 flex flex-wrap items-center justify-between gap-2 text-xs">
             {alert.actionRequired && (
-              <span className="text-slate-600 font-medium flex items-center gap-1">
+              <span className="text-slate-600 font-medium flex items-center gap-1 flex-wrap">
                 <span className="text-slate-400">Suggested Action:</span>
                 <span className="text-slate-800 font-semibold">{alert.actionRequired}</span>
               </span>

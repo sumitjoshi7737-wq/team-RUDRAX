@@ -1,10 +1,19 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Eye } from 'lucide-react';
 import RiskBadge from './RiskBadge';
 
 export default function AnimalTable({ animals, basePath = "/farmer/animals", limit }) {
-  const displayList = limit ? animals.slice(0, limit) : animals;
+  const [sortMode, setSortMode] = useState('High to Low');
+
+  const displayList = useMemo(() => {
+    const sorted = [...animals].sort((a, b) => {
+      if (sortMode === 'Low to High') return a.riskScore - b.riskScore;
+      return b.riskScore - a.riskScore;
+    });
+
+    return limit ? sorted.slice(0, limit) : sorted;
+  }, [animals, sortMode, limit]);
 
   if (displayList.length === 0) {
     return (
@@ -16,6 +25,19 @@ export default function AnimalTable({ animals, basePath = "/farmer/animals", lim
 
   return (
     <div className="bg-white rounded-xl border border-slate-200/80 shadow-sm overflow-hidden">
+      <div className="border-b border-slate-200 bg-slate-50/70 px-4 py-3 flex items-center justify-end">
+        <label className="flex items-center gap-2 text-xs font-medium text-slate-600">
+          <span>Sort by Risk</span>
+          <select
+            value={sortMode}
+            onChange={(e) => setSortMode(e.target.value)}
+            className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 outline-none focus:ring-2 focus:ring-emerald-500"
+          >
+            <option>High to Low</option>
+            <option>Low to High</option>
+          </select>
+        </label>
+      </div>
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm text-slate-700">
           <thead className="bg-slate-50/80 text-xs uppercase font-semibold text-slate-500 border-b border-slate-200">
