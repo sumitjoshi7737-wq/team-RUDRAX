@@ -84,7 +84,7 @@ alsamixer
 1. Copy or clone the `gau-rakshak` codebase to your Raspberry Pi home or desktop directory:
    ```bash
    cd ~
-   git clone https://github.com/Team-RUDRAX/gau-rakshak.git
+   git clone https://github.com/sumitjoshi7737-wq/team-RUDRAX.git
    cd gau-rakshak
    ```
 
