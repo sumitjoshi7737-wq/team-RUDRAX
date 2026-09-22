@@ -1,0 +1,15 @@
+{
+  "team_name": "RUDRAX",
+  "project": "Gau Rakshak",
+  "institution": "Geetanjali Institute of Technical Studies (GITS), Udaipur",
+  "department": "Department of Computer Science & Engineering",
+  "development_location": "CII Lab, GITS Udaipur",
+  "members": {
+    "team_lead": "Sumit Joshi — Team Lead & Hardware Design",
+    "hardware": "Sumit Joshi",
+    "ai_ml": "Mahendra Kumar — AI/ML Engineer",
+    "web_design": "Nandani Parashar — Web Development & Designing",
+    "software": "Uttam Soni — Software Development",
+    "mentor": "Er. Latif Khan — Mentor & Advisor"
+  }
+}

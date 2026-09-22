@@ -1,0 +1,17 @@
+{
+  "project_name": "Gau Rakshak",
+  "tagline": "AI-Powered Early Mastitis Risk Forecasting System for Dairy Cattle",
+  "purpose": "Gau Rakshak is an IoT and Edge-AI solution designed to forecast subclinical mastitis risk in dairy cows before physical symptoms appear, empowering dairy farmers with early alerts.",
+  "offline_capability": "Gau Rakshak operates 100% offline directly on a Raspberry Pi 4 without needing internet, Wi-Fi, or cloud APIs.",
+  "hardware_components": {
+    "raspberry_pi_4": "Raspberry Pi 4 serves as the main offline edge computing hub running AI risk forecasting models, local database, and voice interface.",
+    "thermal_camera": "Thermal camera captures non-invasive thermal images of the udder to detect localized temperature variations and hotspots.",
+    "as7343": "AS7343 is a 14-channel spectral sensor used for multi-spectral optical reflection analysis of milk samples. NOTE: It is part of the multi-sensor pipeline and is NOT a standalone mastitis diagnostic device.",
+    "dht11": "DHT11 measures ambient environmental temperature and relative humidity inside the cattle shed. NOTE: DHT11 measures shed environment, NOT internal milk temperature.",
+    "rfid": "RFID reader scans cattle ear tags for automated individual cow identification and historical health tracking.",
+    "esp32": "ESP32 acts as an auxiliary wireless microcontroller node for gathering sensor readings across cattle stalls.",
+    "solar_power": "Solar panel and battery backup system ensure continuous off-grid operation in rural dairy farms.",
+    "oled_display": "OLED screen displays real-time status, cow IDs, and system state directly on the device."
+  },
+  "workflow": "Cattle RFID Scan -> Ambient (DHT11) & Udder Thermal Imaging + Spectral Sensing (AS7343) -> RPi 4 Edge AI Inference -> Risk Score Generation -> Farmer Audio & Visual Alert."
+}

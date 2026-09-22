@@ -1,0 +1,21 @@
+{
+  "title": "Mastitis Domain Knowledge & Risk Forecasting Rules",
+  "disclaimer": "CRITICAL SAFETY NOTICE: Gau Rakshak is an early warning and risk forecasting system only. It does NOT provide a confirmed medical diagnosis, nor does it prescribe medication or dosages. Always consult a qualified veterinarian for diagnosis and treatment.",
+  "definitions": {
+    "mastitis": "Mastitis is an inflammatory condition of the mammary gland (udder) in dairy cattle, primarily caused by bacterial infections. It affects milk yield, milk quality, and cow health.",
+    "subclinical_mastitis": "Subclinical mastitis is an early, hidden stage of mastitis where the cow shows no visible udder swelling or milk abnormalities, but Somatic Cell Count (SCC) and localized skin temperature elevate. Gau Rakshak specializes in detecting this hidden stage early.",
+    "clinical_mastitis": "Clinical mastitis is an advanced stage with visible symptoms such as udder swelling, redness, pain, localized heat, and clots or discoloration in milk."
+  },
+  "early_symptoms": [
+    "Localized udder surface temperature elevation (detected via Thermal Camera)",
+    "Subtle changes in milk spectral characteristics (detected via AS7343 sensor)",
+    "Elevated Somatic Cell Count (SCC)",
+    "Reduced milk yield or slight watery consistency",
+    "Restlessness, discomfort during milking, or behavioral changes"
+  ],
+  "safety_guardrails": {
+    "is_diagnostic_tool": false,
+    "provides_medication": false,
+    "action_on_high_risk": "Recommend immediate professional examination by a qualified veterinarian."
+  }
+}

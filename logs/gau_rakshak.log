@@ -1,0 +1,16 @@
+2026-09-22 14:35:02,953 [INFO] GauRakshak.KnowledgeLoader: Loaded 19 QA rules into local knowledge engine.
+2026-09-22 14:35:02,954 [INFO] GauRakshak.OfflineSTT: Offline STT initialized for English language (Whisper/Vosk).
+2026-09-22 14:35:03,042 [INFO] comtypes.client._code_cache: Imported existing <module 'comtypes.gen' from 'C:\\Users\\SUMIT\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2026-09-22 14:35:03,042 [INFO] comtypes.client._code_cache: Using writeable comtypes cache directory: 'C:\Users\SUMIT\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\comtypes\gen'
+2026-09-22 14:35:03,240 [INFO] GauRakshak.OfflineTTS: pyttsx3 TTS engine initialized.
+2026-09-22 14:40:27,470 [INFO] GauRakshak.KnowledgeLoader: Loaded 19 QA rules into local knowledge engine.
+2026-09-22 14:40:27,470 [INFO] GauRakshak.OfflineSTT: Offline STT initialized for English language (Whisper/Vosk).
+2026-09-22 14:40:27,551 [INFO] comtypes.client._code_cache: Imported existing <module 'comtypes.gen' from 'C:\\Users\\SUMIT\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2026-09-22 14:40:27,551 [INFO] comtypes.client._code_cache: Using writeable comtypes cache directory: 'C:\Users\SUMIT\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\comtypes\gen'
+2026-09-22 14:40:27,734 [INFO] GauRakshak.OfflineTTS: pyttsx3 TTS engine initialized.
+2026-09-22 14:40:35,304 [INFO] GauRakshak.OfflineTTS: Synthesizing speech for: 'Gau Rakshak is an offline AI early mastitis risk forecasting...'
+2026-09-22 14:40:35,554 [INFO] GauRakshak.OfflineTTS: pyttsx3 synthesized speech to audio/response.wav
+2026-09-22 14:40:35,554 [INFO] GauRakshak.Audio: Playing audio: audio/response.wav
+2026-09-22 14:40:56,565 [INFO] GauRakshak.Audio: Recording audio for 5 seconds...
+2026-09-22 14:41:02,089 [INFO] GauRakshak.Audio: Audio recorded successfully to audio/input.wav
+2026-09-22 14:41:02,089 [WARNING] GauRakshak.OfflineSTT: No speech engine transcription produced. Returning default voice cue.

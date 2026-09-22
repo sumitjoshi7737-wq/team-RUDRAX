@@ -1,0 +1,135 @@
+[
+  {
+    "id": "gau_rakshak_intro",
+    "keywords": ["gau rakshak kya hai", "what is gau rakshak", "gau rakshak project", "gau rakshak ke bare me batao", "about gau rakshak"],
+    "answer_hinglish": "Gau Rakshak ek AI-based early mastitis risk forecasting system hai jo dairy cows me subclinical mastitis ka shuruaati khatra pehchanta hai.",
+    "answer_english": "Gau Rakshak is an AI-powered early mastitis risk forecasting system designed for dairy cattle to detect subclinical mastitis risk early.",
+    "answer_hindi": "गौ रक्षक एक एआई-आधारित अर्ली मेस्टाइटिस रिस्क फॉरकास्टिंग सिस्टम है जो डेयरी गायों में बीमारी का शुरुआती जोखिम पहचानता है।"
+  },
+  {
+    "id": "gau_rakshak_working",
+    "keywords": ["kaise kaam karta hai", "how does it work", "working mechanism", "kaise kaam karta h", "working of gau rakshak"],
+    "answer_hinglish": "Gau Rakshak RFID tag se cow identification karta hai, thermal camera se udder heat patterns read karta hai, AS7343 se spectral analysis karta hai, aur DHT11 se shed environment monitor karke local AI model dwara risk score generate karta hai.",
+    "answer_english": "Gau Rakshak scans cow RFID tags, measures udder thermal patterns using a thermal camera, checks spectral properties via AS7343, monitors environment via DHT11, and uses an edge AI model on Raspberry Pi 4 to calculate mastitis risk.",
+    "answer_hindi": "गौ रक्षक आरएफआईडी टैग से गाय की पहचान करता है, थर्मल कैमरा और AS7343 स्पेक्ट्रल सेंसर से डेटा एकत्र करता है, और रास्पबेरी पाई 4 पर रिस्क स्कोर बनाता है।"
+  },
+  {
+    "id": "mastitis_definition",
+    "keywords": ["mastitis kya hota hai", "what is mastitis", "mastitis kya hai", "mastitis bimari kya hai", "definition of mastitis"],
+    "answer_hinglish": "Mastitis dairy cows ke udder ya thooth me hone waala bacterial infection aur sujan hai, jisse milk yield aur quality par bura asar padta hai.",
+    "answer_english": "Mastitis is an inflammatory infection of the mammary gland (udder) in dairy cows that reduces milk yield and quality.",
+    "answer_hindi": "मेस्टाइटिस गायों थन में होने वाली सूजन और इन्फेक्शन की बीमारी है, जिससे दूध उत्पादन और गुणवत्ता प्रभावित होती है।"
+  },
+  {
+    "id": "early_symptoms",
+    "keywords": ["early symptoms", "shuruaati lakshan", "symptoms kya hain", "symptoms kya hai", "early signs of mastitis", "mastitis ke symptoms"],
+    "answer_hinglish": "Mastitis ke shuruaati lakshano me udder me halki garmi (temperature spike), milk composition me subtle changes, Somatic Cell Count ka badhna, aur cow me restlessness shamil hain. Dhyaan rahe, kisi bhi shanka par pashu chikitsak se sampark karein.",
+    "answer_english": "Early signs of mastitis include subtle udder skin temperature elevation, minor milk spectral changes, increased Somatic Cell Count, and mild discomfort. Gau Rakshak forecasts risk, but always consult a veterinarian for examination.",
+    "answer_hindi": "शुरुआती लक्षणों में थन के तापमान में वृद्धि, दूध की रंगत में सूक्ष्म बदलाव और सोमैटिक सेल काउंट बढ़ना शामिल हैं। कृप्या पशु चिकित्सक से जांच करवाएं।"
+  },
+  {
+    "id": "subclinical_mastitis",
+    "keywords": ["subclinical mastitis kya hai", "what is subclinical mastitis", "subclinical mastitis", "sub clinical mastitis"],
+    "answer_hinglish": "Subclinical mastitis mastitis ki shuruaati hidden stage hai jisme udder me bahar se koi sujan ya milk me clots nahi dikhte, lekin internal cell count aur local temperature badh jata hai. Gau Rakshak isi hidden stage ko pehchanta hai.",
+    "answer_english": "Subclinical mastitis is the early, hidden stage of udder inflammation without visible udder swelling or milk clotting, but with elevated somatic cell count and skin temperature. Gau Rakshak is specifically built to forecast this early stage.",
+    "answer_hindi": "सबक्लिनिकल मेस्टाइटिस बीमारी की शुरुआती छिपी हुई अवस्था है, जिसमें बाहर सूजन नहीं दिखती लेकिन अंदर इन्फेक्शन शुरू हो जाता है।"
+  },
+  {
+    "id": "thermal_camera_role",
+    "keywords": ["thermal camera ka kya role hai", "thermal camera", "role of thermal camera", "thermal imaging kya karti hai"],
+    "answer_hinglish": "Thermal camera cow ke udder surface temperature distribution ko read karta hai. Shuruaati subclinical mastitis me localized hotspot ya garmi banti hai jo thermal camera catch karta hai.",
+    "answer_english": "The thermal camera measures surface temperature patterns across the cow's udder to detect subtle localized heat spikes associated with subclinical inflammation.",
+    "answer_hindi": "थर्मल कैमरा थन के तापमान वितरण को मापता है ताकि शुरुआती सूजन से पैदा हुई गर्मी और हॉटस्पॉट की पहचान की जा सके।"
+  },
+  {
+    "id": "rpi4_role",
+    "keywords": ["raspberry pi 4 ka kya role hai", "raspberry pi role", "rpi4 role", "role of raspberry pi 4", "raspberry pi kya karta hai"],
+    "answer_hinglish": "Raspberry Pi 4 central offline edge computing unit hai. Yeh sabhi sensors ka data process karta hai, AI risk model run karta hai, local GUI aur offline voice assistant ko bina internet ke chalata hai.",
+    "answer_english": "Raspberry Pi 4 serves as the main offline edge processing unit. It runs the AI risk forecasting models, manages the local database, and powers the offline voice GUI.",
+    "answer_hindi": "रास्पबेरी पाई 4 मुख्य ऑफलाइन एज-कंप्यूटिंग यूनिट है जो बिना इंटरनेट के एआई मॉडल, डेटाबेस और वॉइस असिस्टेंट को चलाती है।"
+  },
+  {
+    "id": "rfid_role",
+    "keywords": ["rfid ka kya role hai", "rfid role", "role of rfid", "rfid kya karta hai"],
+    "answer_hinglish": "RFID sensor cow ke ear tag ko read karke cow unique ID fetch karta hai, jisse har cow ka historical health log aur risk score maintain hota hai.",
+    "answer_english": "The RFID sensor scans the ear tag of each cow to retrieve its unique identification for tracking individual health history and risk records.",
+    "answer_hindi": "आरएफआईडी सेंसर गाय के कान के टैग को स्कैन करके उसकी विशिष्ट पहचान करता है और स्वास्थ्य रिकॉर्ड रखता है।"
+  },
+  {
+    "id": "dht11_role",
+    "keywords": ["dht11 kya measure karta hai", "dht11 role", "role of dht11", "dht11 kya karta hai", "dht11 sensor"],
+    "answer_hinglish": "DHT11 sensor cattle shed ka ambient room temperature aur relative humidity measure karta hai. Dhyaan rahe, DHT11 milk temperature sensor nahi hai, yeh paryavaran ki garmi maapta hai.",
+    "answer_english": "The DHT11 sensor measures the ambient environmental temperature and relative humidity inside the cattle shed. Note: DHT11 is an environmental sensor, NOT a milk temperature sensor.",
+    "answer_hindi": "DHT11 सेंसर मवेशी शेड के कमरे का तापमान और नमी मापता है। यह दूध का तापमान मापने वाला सेंसर नहीं है।"
+  },
+  {
+    "id": "as7343_role",
+    "keywords": ["as7343 kya karta hai", "as7343 role", "role of as7343", "as7343 sensor", "as7343 spectral"],
+    "answer_hinglish": "AS7343 14-channel spectral sensor hai jo milk sample ki optical reflection properties analyze karta hai. Dhyaan rahe, AS7343 Akela standalone mastitis diagnostic device nahi hai, yeh multi-sensor pipeline ka hissa hai.",
+    "answer_english": "The AS7343 is a 14-channel spectral sensor that analyzes the optical reflection profile of milk samples. Note: It is part of a multi-sensor pipeline and is NOT a standalone mastitis diagnostic device.",
+    "answer_hindi": "AS7343 एक 14-चैनल स्पेक्ट्रल सेंसर है जो दूध के नमूनों के ऑप्टिकल रिफ्लेक्शन का विश्लेषण करता है। यह अकेले निदान उपकरण नहीं है।"
+  },
+  {
+    "id": "team_lead",
+    "keywords": ["team lead kaun hai", "who is team lead", "team lead name", "lead of rudrax"],
+    "answer_hinglish": "Team RUDRAX ke Team Lead Sumit Joshi hain, jinhone project ka hardware architecture aur integration handle kiya hai.",
+    "answer_english": "The Team Lead for RUDRAX is Sumit Joshi, who also designed and integrated the hardware system.",
+    "answer_hindi": "टीम रुद्राक्ष के टीम लीड सुमित जोशी हैं, जिन्होंने हार्डवेयर आर्किटेक्चर संभाला है।"
+  },
+  {
+    "id": "hardware_lead",
+    "keywords": ["hardware kisne handle kiya", "hardware design", "who handled hardware", "hardware lead"],
+    "answer_hinglish": "Hardware development aur sensor integration Team Lead Sumit Joshi ne handle kiya hai.",
+    "answer_english": "Hardware integration and circuit design were led by Sumit Joshi.",
+    "answer_hindi": "हार्डवेयर विकास और सेंसर एकीकरण का कार्य सुमित जोशी द्वारा किया गया है।"
+  },
+  {
+    "id": "ai_ml_lead",
+    "keywords": ["ai ml kaun dekh raha hai", "ai/ml lead", "who handles ai ml", "ai engineer", "ml engineer"],
+    "answer_hinglish": "Gau Rakshak ka AI/ML model aur risk forecasting algorithm Mahendra Kumar ne develop kiya hai.",
+    "answer_english": "The AI/ML models and risk prediction algorithms were developed by Mahendra Kumar.",
+    "answer_hindi": "एआई और मशीन लर्निंग मॉडल का विकास महेंद्र कुमार द्वारा किया गया है।"
+  },
+  {
+    "id": "software_lead",
+    "keywords": ["software kaun dekh raha hai", "software lead", "who handles software", "software developer"],
+    "answer_hinglish": "Software development aur application logic Uttam Soni ne handle kiya hai.",
+    "answer_english": "Software development and application engineering were handled by Uttam Soni.",
+    "answer_hindi": "सॉफ्टवेयर डेवलपमेंट का कार्य उत्तम सोनी द्वारा किया गया है।"
+  },
+  {
+    "id": "mentor_info",
+    "keywords": ["mentor kaun hai", "who is the mentor", "mentor name", "advisor"],
+    "answer_hinglish": "Gau Rakshak project ke mentor Er. Latif Khan hain.",
+    "answer_english": "The mentor for team RUDRAX is Er. Latif Khan.",
+    "answer_hindi": "गौ रक्षक प्रोजेक्ट के मेंटर इंजीनियर लतीफ खान हैं।"
+  },
+  {
+    "id": "team_name_info",
+    "keywords": ["team ka naam kya hai", "what is team name", "team name"],
+    "answer_hinglish": "Project ko develop karne waali team ka naam RUDRAX hai.",
+    "answer_english": "The team behind Gau Rakshak is Team RUDRAX.",
+    "answer_hindi": "टीम का नाम रुद्राक्ष (RUDRAX) है।"
+  },
+  {
+    "id": "college_info",
+    "keywords": ["which college developed gau rakshak", "college name", "institution", "gits udaipur", "kis college ne banaya"],
+    "answer_hinglish": "Gau Rakshak ko Geetanjali Institute of Technical Studies (GITS), Udaipur ke Computer Science Department ke CII Lab me develop kiya gaya hai.",
+    "answer_english": "Gau Rakshak was developed at Geetanjali Institute of Technical Studies (GITS), Udaipur, in the Computer Science Department at CII Lab.",
+    "answer_hindi": "गौ रक्षक का विकास गीतांजलि इंस्टीट्यूट ऑफ टेक्निकल स्टडीज (GITS), उदयपुर के कंप्यूटर साइंस विभाग की CII लैब में हुआ है।"
+  },
+  {
+    "id": "diagnosis_system_question",
+    "keywords": ["is gau rakshak a diagnosis system", "kya gau rakshak diagnosis system hai", "medical diagnosis", "is it diagnostic"],
+    "answer_hinglish": "Nahi, Gau Rakshak ek medical diagnosis system nahi hai. Yeh ek early risk forecasting aur warning system hai. High risk par humesha veterinary doctor se jaanch karwayein.",
+    "answer_english": "No, Gau Rakshak is NOT a confirmed medical diagnosis system. It is an early risk forecasting and warning system. For high-risk alerts, consult a licensed veterinarian.",
+    "answer_hindi": "नहीं, गौ रक्षक चिकित्सीय निदान (Diagnosis) प्रणाली नहीं है। यह केवल शुरुआती जोखिम पूर्वानुमान (Risk Forecasting) प्रणाली है।"
+  },
+  {
+    "id": "offline_mode_question",
+    "keywords": ["does it work offline", "kya yeh offline kaam karta hai", "without internet", "offline works"],
+    "answer_hinglish": "Haan! Gau Rakshak 100% offline kaam karta hai. Raspberry Pi 4 par Bina Wi-Fi, Ethernet ya cloud API ke sabhi sensor analysis, AI risk calculation aur voice responses chalte hain.",
+    "answer_english": "Yes! Gau Rakshak operates 100% offline on Raspberry Pi 4 without Wi-Fi, Ethernet, or any cloud API.",
+    "answer_hindi": "हाँ! गौ रक्षक 100% ऑफलाइन काम करता है। इसके लिए किसी भी इंटरनेट, वाई-फाई या क्लाउड एपीआई की आवश्यकता नहीं है।"
+  }
+]
