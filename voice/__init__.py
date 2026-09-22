@@ -1,6 +1,5 @@
-# Gau Rakshak Voice Subsystem
-from .audio import AudioRecorder, AudioPlayer
-from .stt import OfflineSTT
-from .tts import OfflineTTS
+from .recorder import VoiceRecorder
+from .stt.stt_engine import STTEngine
+from .tts.tts_engine import TTSEngine
 
-__all__ = ["AudioRecorder", "AudioPlayer", "OfflineSTT", "OfflineTTS"]
+__all__ = ["VoiceRecorder", "STTEngine", "TTSEngine"]

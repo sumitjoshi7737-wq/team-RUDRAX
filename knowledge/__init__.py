@@ -1,5 +1,4 @@
-# Gau Rakshak Knowledge Module
-from .loader import KnowledgeLoader
-from .qa_engine import QAEngine
+# Knowledge module for Gau Rakshak offline voice assistant
+from .matcher import KnowledgeMatcher
 
-__all__ = ["KnowledgeLoader", "QAEngine"]
+__all__ = ["KnowledgeMatcher"]

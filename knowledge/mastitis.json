@@ -1,21 +1,21 @@
 {
-  "title": "Mastitis Domain Knowledge & Risk Forecasting Rules",
-  "disclaimer": "CRITICAL SAFETY NOTICE: Gau Rakshak is an early warning and risk forecasting system only. It does NOT provide a confirmed medical diagnosis, nor does it prescribe medication or dosages. Always consult a qualified veterinarian for diagnosis and treatment.",
-  "definitions": {
-    "mastitis": "Mastitis is an inflammatory condition of the mammary gland (udder) in dairy cattle, primarily caused by bacterial infections. It affects milk yield, milk quality, and cow health.",
-    "subclinical_mastitis": "Subclinical mastitis is an early, hidden stage of mastitis where the cow shows no visible udder swelling or milk abnormalities, but Somatic Cell Count (SCC) and localized skin temperature elevate. Gau Rakshak specializes in detecting this hidden stage early.",
-    "clinical_mastitis": "Clinical mastitis is an advanced stage with visible symptoms such as udder swelling, redness, pain, localized heat, and clots or discoloration in milk."
+  "overview": {
+    "definition": "Mastitis is an inflammatory condition of the udder in dairy cows, usually caused by bacterial infection.",
+    "subclinical": "Subclinical mastitis has no visible symptoms in milk or udder, but leads to increased Somatic Cell Count (SCC) and reduced milk yield. Early detection is critical.",
+    "clinical": "Clinical mastitis shows visible symptoms like swelling, redness, heat, pain in the udder, and abnormal milk (clots, flakes, or watery milk)."
   },
   "early_symptoms": [
-    "Localized udder surface temperature elevation (detected via Thermal Camera)",
-    "Subtle changes in milk spectral characteristics (detected via AS7343 sensor)",
-    "Elevated Somatic Cell Count (SCC)",
-    "Reduced milk yield or slight watery consistency",
-    "Restlessness, discomfort during milking, or behavioral changes"
+    "Slight rise in udder surface temperature detected via thermal imaging",
+    "Minor swelling or localized udder warmth",
+    "Early subtle changes in milk yield",
+    "Restlessness or discomfort during milking",
+    "Elevated somatic cell levels before visible milk alterations"
   ],
-  "safety_guardrails": {
-    "is_diagnostic_tool": false,
-    "provides_medication": false,
-    "action_on_high_risk": "Recommend immediate professional examination by a qualified veterinarian."
-  }
+  "safety_disclaimer": "IMPORTANT: Gau Rakshak provides early risk forecasting and risk alerts only. It DOES NOT provide confirmed medical diagnoses, nor does it recommend medicines or dosages. If high risk is detected, immediate examination by a qualified veterinarian is recommended.",
+  "prevention": [
+    "Maintain clean and dry teats and stall bedding",
+    "Follow post-milking teat dipping protocols",
+    "Ensure proper milking machine vacuum calibration",
+    "Regular udder health monitoring using Gau Rakshak thermal and spectral sensors"
+  ]
 }
