@@ -1,24 +1,28 @@
-import React, { useState, useMemo } from 'react';
+﻿import React, { useState, useMemo } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
 import AnimalTable from '../../components/AnimalTable';
 import AnimalCard from '../../components/AnimalCard';
-import { animalsData } from '../../data/animals';
+import { LiveLoading, LiveError } from '../../components/LiveStatus';
+import { useLiveAnimals } from '../../hooks/useLiveAnimals';
+import { useLanguage } from '../../context/LanguageContext';
 import { Search, Filter, LayoutGrid, Table } from 'lucide-react';
 
 export default function FarmerAnimals() {
+  const { t } = useLanguage();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('All');
   const [viewMode, setViewMode] = useState('table');
+  // LIVE TODAY: mastiguard/animals/COW001-COW010/history newest by timestamp (onValue).
+  const { animals, loading, error } = useLiveAnimals();
 
-  const filters = ['All', 'Low Risk', 'Medium Risk', 'High Risk'];
+  const FILTER_DEFS = [{ id: 'All', labelKey: 'all' },{ id: 'Low Risk', labelKey: 'lowRisk' },{ id: 'Medium Risk', labelKey: 'mediumRisk' },{ id: 'High Risk', labelKey: 'highRisk' },];
 
   const filteredAnimals = useMemo(() => {
-    return animalsData.filter((animal) => {
+    return animals.filter((animal) => {
       const query = searchTerm.toLowerCase();
       const matchesSearch =
         animal.id.toLowerCase().includes(query) ||
-        animal.tag.toLowerCase().includes(query) ||
-        animal.breed.toLowerCase().includes(query);
+        animal.tag.toLowerCase().includes(query);
 
       let matchesFilter = true;
       if (selectedFilter === 'Low Risk') {
@@ -31,10 +35,30 @@ export default function FarmerAnimals() {
 
       return matchesSearch && matchesFilter;
     });
-  }, [searchTerm, selectedFilter]);
+  }, [searchTerm, selectedFilter, animals]);
+
+  if (loading) {
+    return (
+      <DashboardLayout role="farmer" title={t("animals")}>
+        <div className="space-y-6">
+          <LiveLoading />
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <DashboardLayout role="farmer" title={t("animals")}>
+        <div className="space-y-6">
+          <LiveError message={error} />
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
-    <DashboardLayout role="farmer" title="Animals">
+    <DashboardLayout role="farmer" title={t("animals")}>
       <div className="space-y-6">
         {/* Top Control Bar */}
         <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -47,8 +71,8 @@ export default function FarmerAnimals() {
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search by Animal ID, Tag, or Breed..."
-              className="w-full pl-10 pr-4 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
+              placeholder={t("searchByAnimalPlaceholder")}
+              className="w-full pl-10 pr-4 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition"
             />
           </div>
 
@@ -60,20 +84,20 @@ export default function FarmerAnimals() {
                 className={`p-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 transition ${
                   viewMode === 'table' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-900'
                 }`}
-                title="Table View"
+                title={t("tableView")}
               >
                 <Table className="w-4 h-4" />
-                <span className="hidden sm:inline">Table</span>
+                <span className="hidden sm:inline">{t("table")}</span>
               </button>
               <button
                 onClick={() => setViewMode('grid')}
                 className={`p-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 transition ${
                   viewMode === 'grid' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-900'
                 }`}
-                title="Grid Cards View"
+                title={t("gridView")}
               >
                 <LayoutGrid className="w-4 h-4" />
-                <span className="hidden sm:inline">Cards</span>
+                <span className="hidden sm:inline">{t("cards")}</span>
               </button>
             </div>
           </div>
@@ -82,22 +106,24 @@ export default function FarmerAnimals() {
         {/* Filter Pills */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1">
           <span className="text-xs font-semibold text-slate-400 flex items-center gap-1 mr-1">
-            <Filter className="w-3.5 h-3.5" /> Filter:
+            <Filter className="w-3.5 h-3.5" /> {t("filterLabel")}
           </span>
-          {filters.map((filter) => {
+          {FILTER_DEFS.map((filterDef) => {
+            const filter = filterDef.id;
+            const filterLabel = t(filterDef.labelKey);
             const count = filter === 'All' 
-              ? animalsData.length
+              ? animals.length
               : filter === 'Low Risk'
-              ? animalsData.filter(a => a.riskScore < 45).length
+              ? animals.filter(a => a.riskScore < 45).length
               : filter === 'Medium Risk'
-              ? animalsData.filter(a => a.riskScore >= 45 && a.riskScore < 70).length
-              : animalsData.filter(a => a.riskScore >= 70).length;
+              ? animals.filter(a => a.riskScore >= 45 && a.riskScore < 70).length
+              : animals.filter(a => a.riskScore >= 70).length;
 
             const isSelected = selectedFilter === filter;
 
             return (
               <button
-                key={filter}
+                key={filterDef.id}
                 onClick={() => setSelectedFilter(filter)}
                 className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 ${
                   isSelected
@@ -105,7 +131,7 @@ export default function FarmerAnimals() {
                     : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
                 }`}
               >
-                <span>{filter}</span>
+                <span>{filterLabel}</span>
                 <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
                   isSelected ? 'bg-slate-700 text-slate-200' : 'bg-slate-100 text-slate-500'
                 }`}>

@@ -1,51 +1,56 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import { LanguageProvider } from './context/LanguageContext';
+import ProtectedRoute, { RoleProtectedRoute } from './components/ProtectedRoute';
 
 // Pages
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
 
 // Farmer Pages
 import FarmerDashboard from './pages/farmer/Dashboard';
 import FarmerAnimals from './pages/farmer/Animals';
 import FarmerAnimalDetails from './pages/farmer/AnimalDetails';
-import FarmerAnalytics from './pages/farmer/Analytics';
 import FarmerAlerts from './pages/farmer/Alerts';
 
 // Veterinarian Pages
 import VeterinarianDashboard from './pages/veterinarian/Dashboard';
 import VetAnimals from './pages/veterinarian/Animals';
 import VetAnimalDetails from './pages/veterinarian/AnimalDetails';
-import VetAnalytics from './pages/veterinarian/Analytics';
 import VetAlerts from './pages/veterinarian/Alerts';
 
 export default function App() {
   return (
     <BrowserRouter>
+      <LanguageProvider>
+      <AuthProvider>
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
 
-        {/* Farmer Portal Routes */}
-        <Route path="/farmer" element={<FarmerDashboard />} />
-        <Route path="/farmer/animals" element={<FarmerAnimals />} />
-        <Route path="/farmer/animals/:id" element={<FarmerAnimalDetails role="farmer" />} />
-        <Route path="/farmer/analytics" element={<FarmerAnalytics role="farmer" />} />
-        <Route path="/farmer/alerts" element={<FarmerAlerts role="farmer" />} />
+        {/* Farmer Portal Routes (protected, role === "farmer") */}
+        <Route path="/farmer" element={<RoleProtectedRoute allowedRole="farmer"><FarmerDashboard /></RoleProtectedRoute>} />
+        <Route path="/farmer/animals" element={<RoleProtectedRoute allowedRole="farmer"><FarmerAnimals /></RoleProtectedRoute>} />
+        <Route path="/farmer/animals/:id" element={<RoleProtectedRoute allowedRole="farmer"><FarmerAnimalDetails role="farmer" /></RoleProtectedRoute>} />
+        <Route path="/farmer/alerts" element={<RoleProtectedRoute allowedRole="farmer"><FarmerAlerts role="farmer" /></RoleProtectedRoute>} />
 
-        {/* Veterinarian Portal Routes */}
-        <Route path="/veterinarian" element={<VeterinarianDashboard />} />
-        <Route path="/veterinarian/animals" element={<VetAnimals />} />
-        <Route path="/veterinarian/animals/:id" element={<VetAnimalDetails />} />
-        <Route path="/veterinarian/analytics" element={<VetAnalytics />} />
-        <Route path="/veterinarian/alerts" element={<VetAlerts />} />
+        {/* Veterinarian Portal Routes (protected, role === "veterinarian") */}
+        <Route path="/veterinarian" element={<RoleProtectedRoute allowedRole="veterinarian"><VeterinarianDashboard /></RoleProtectedRoute>} />
+        <Route path="/veterinarian/animals" element={<RoleProtectedRoute allowedRole="veterinarian"><VetAnimals /></RoleProtectedRoute>} />
+        <Route path="/veterinarian/animals/:id" element={<RoleProtectedRoute allowedRole="veterinarian"><VetAnimalDetails /></RoleProtectedRoute>} />
+        <Route path="/veterinarian/alerts" element={<RoleProtectedRoute allowedRole="veterinarian"><VetAlerts /></RoleProtectedRoute>} />
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      </AuthProvider>
+      </LanguageProvider>
     </BrowserRouter>
   );
 }

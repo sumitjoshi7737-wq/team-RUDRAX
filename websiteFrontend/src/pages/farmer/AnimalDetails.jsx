@@ -1,86 +1,144 @@
-import React from 'react';
+﻿import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import DashboardLayout from '../../components/DashboardLayout';
 import RiskBadge from '../../components/RiskBadge';
 import SensorCard from '../../components/SensorCard';
-import AnimalBehaviourCard from '../../components/AnimalBehaviourCard';
-import ForecastChart from '../../components/charts/ForecastChart';
 import RiskTrendChart from '../../components/charts/RiskTrendChart';
-import MilkYieldChart from '../../components/charts/MilkYieldChart';
-import ConductivityChart from '../../components/charts/ConductivityChart';
-import { animalsData } from '../../data/animals';
-import { 
-  ArrowLeft, 
-  Sparkles, 
-  Activity, 
-  Droplets, 
-  Thermometer, 
-  Calendar, 
-  History, 
-  AlertTriangle, 
-  CheckCircle2, 
+import { LiveLoading, LiveError, LiveBadge } from '../../components/LiveStatus';
+import { useLiveAnimal } from '../../hooks/useLiveAnimals';
+import { buildSevenDayTrend } from '../../data/demoHistory';
+import { useLanguage } from '../../context/LanguageContext';
+import {
+  ArrowLeft,
+  Sparkles,
   Info,
-  Camera,
-  Cpu,
-  Wifi,
-  HelpCircle,
-  Clock
+  HelpCircle
 } from 'lucide-react';
 
 export default function FarmerAnimalDetails({ role = "farmer" }) {
   const { id } = useParams();
-  const animal = animalsData.find((a) => a.id.toLowerCase() === id?.toLowerCase()) || animalsData[0];
+  const { t } = useLanguage();
+  // LIVE TODAY: mastiguard/animals/${cowId}/history newest by timestamp (onValue, auto-updates).
+  const { animal, loading, error } = useLiveAnimal(id);
   const basePath = role === 'veterinarian' ? '/veterinarian' : '/farmer';
+
+  if (loading) {
+    return (
+      <DashboardLayout role={role} title={t("animalDetailsWithId", { id })}>
+        <div className="space-y-6">
+          <LiveLoading message={t("loadingLiveDataFor", { id })} />
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  if (error || !animal) {
+    return (
+      <DashboardLayout role={role} title={t("animalDetailsWithId", { id })}>
+        <div className="space-y-6">
+          <LiveError message={error || t("unableToLoadLive")} />
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   const getScoreColor = (score) => {
     if (score >= 70) return 'text-rose-600 bg-rose-50 border-rose-200';
     if (score >= 45) return 'text-amber-600 bg-amber-50 border-amber-200';
-    return 'text-emerald-600 bg-emerald-50 border-emerald-200';
+    return 'text-amber-600 bg-amber-50 border-amber-200';
   };
 
   const getProgressBarColor = (score) => {
     if (score >= 70) return 'bg-rose-500';
     if (score >= 45) return 'bg-amber-500';
-    return 'bg-emerald-500';
+    return 'bg-amber-500';
   };
 
   const isHighRisk = animal.riskScore >= 70;
   const isMedRisk = animal.riskScore >= 45 && animal.riskScore < 70;
 
+  // Risk signals from live Firebase values only (no dummy behaviour/history).
+  const baseSignals = (animal.riskFactors || []).map((f) => ({ name: f.name, status: f.status, value: f.value }));
+
+  const sccStatus = animal.scc >= 400 ? "High Risk" : animal.scc >= 200 ? "Needs Attention" : "Healthy";
+  const sccNote =
+    animal.scc >= 400
+      ? t("elevatedScc")
+      : animal.scc >= 200
+        ? t("slightlyElevatedScc")
+        : t("withinNormalRange");
+
+  const lactoseVal = animal.lactose ?? 0;
+  const lactoseStatus = lactoseVal < 4.3 ? "High Risk" : lactoseVal < 4.6 ? "Needs Attention" : "Healthy";
+  const lactoseNote =
+    lactoseVal < 4.3
+      ? t("lactoseLow")
+      : lactoseVal < 4.6
+        ? t("lactoseSlightlyLow")
+        : t("withinNormalRange");
+
+  const displaySignals = [
+    ...baseSignals,
+    {
+      name: "SCC (Spectroscopy)",
+      status: sccStatus,
+      note: sccNote,
+    },
+    {
+      name: "Lactose%",
+      status: lactoseStatus,
+      note: lactoseNote,
+    },
+  ];
+
+  // DEMO graph: previous 6 days = local demoHistory (DEMO), Today = real Firebase final_risk (LIVE).
+  // Same existing RiskTrendChart (recharts) — one continuous visual, sources stay separate.
+  // New Firebase history record auto-updates ONLY the Today point via useLiveAnimal listener.
+  const sevenDayTrend = buildSevenDayTrend(animal.id, animal.riskScore);
+
   return (
-    <DashboardLayout role={role} title={`Animal Details: ${animal.id} (${animal.tag})`}>
+    <DashboardLayout role={role} title={t("animalDetailsWithId", { id: animal.id })}>
       <div className="space-y-6">
         {/* Navigation Breadcrumb */}
         <div>
           <Link
             to={`${basePath}/animals`}
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-emerald-600 transition"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-amber-600 transition"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>Back to Animals</span>
+            <span>{t("backToAnimals")}</span>
           </Link>
         </div>
 
-        {/* Top Header Card - Animal Information */}
-        <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/80 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="flex items-center gap-4 min-w-0 flex-wrap">
-            <div className="w-16 h-16 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 font-extrabold text-2xl flex items-center justify-center shadow-inner shrink-0">
-              {animal.id}
-            </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-3 flex-wrap">
-                <h2 className="text-xl sm:text-2xl font-black text-slate-900 break-words">{animal.id} - {animal.tag}</h2>
-                <RiskBadge level={animal.riskLevel} score={animal.riskScore} />
-              </div>
-              <p className="text-xs sm:text-sm text-slate-500 mt-1 leading-relaxed break-words">
-                Breed: <strong>{animal.breed}</strong> • Age: <strong>{animal.age}</strong> • Lactation: <strong>{animal.lactation}</strong> • Daily Milk: <strong>{animal.milkYield} L</strong>
-              </p>
-            </div>
+        {/* Top Header Card - Animal Information (compact) */}
+        <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-sm">
+          <div className="flex items-center gap-3 flex-wrap min-w-0">
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900 break-words">{animal.id}</h2>
+            <RiskBadge level={animal.riskLevel} score={animal.riskScore} />
+            <LiveBadge timestamp={animal.timestamp} dataSource={animal.dataSource} />
           </div>
-
-          <div className="flex items-center gap-2 bg-slate-50 p-2 rounded-xl border border-slate-100 text-xs text-slate-600 max-w-full">
-            <Clock className="w-4 h-4 text-slate-400 shrink-0" />
-            <span className="break-words">Last milking check: <strong>Today 06:30 AM</strong></span>
+          <p className="mt-2 text-xs text-slate-500">
+            {animal.dataSource === "history" ? "Last available data from Firebase " : "Live from Firebase "}
+            <span className="font-mono font-semibold">mastiguard/animals/{animal.id}/history</span>
+            {animal.timestamp ? ` • ${t("lastUpdated")} ${new Date(animal.timestamp).toLocaleString()}` : ""}
+          </p>
+          <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
+            <div className="p-2 rounded-xl bg-slate-50 border border-slate-100">
+              <p className="text-[10px] font-semibold text-slate-400 uppercase">{t("riskScore")}</p>
+              <p className="text-sm font-bold text-slate-800">{animal.finalRisk}%</p>
+            </div>
+            <div className="p-2 rounded-xl bg-slate-50 border border-slate-100">
+              <p className="text-[10px] font-semibold text-slate-400 uppercase">{t("imageRisk")}</p>
+              <p className="text-sm font-bold text-slate-800">{animal.imageRisk ?? "—"}%</p>
+            </div>
+            <div className="p-2 rounded-xl bg-slate-50 border border-slate-100">
+              <p className="text-[10px] font-semibold text-slate-400 uppercase">{t("sensorRisk")}</p>
+              <p className="text-sm font-bold text-slate-800">{animal.sensorRisk ?? "—"}%</p>
+            </div>
+            <div className="p-2 rounded-xl bg-slate-50 border border-slate-100">
+              <p className="text-[10px] font-semibold text-slate-400 uppercase">{t("riskLevel")}</p>
+              <p className="text-sm font-bold text-slate-800">{animal.rawRiskLevel}</p>
+            </div>
           </div>
         </div>
 
@@ -91,9 +149,9 @@ export default function FarmerAnimalDetails({ role = "farmer" }) {
             <div>
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs uppercase font-bold tracking-wider text-slate-500 flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-emerald-600" /> Current Health Risk
+                  <Sparkles className="w-3.5 h-3.5 text-amber-600" /> {t("currentHealthRisk")}
                 </span>
-                <span className="text-[10px] text-slate-400">AI Risk</span>
+                <span className="text-[10px] text-slate-400">{t("aiRiskPrediction")}</span>
               </div>
 
               <div className="text-center py-4">
@@ -102,7 +160,7 @@ export default function FarmerAnimalDetails({ role = "farmer" }) {
                 </div>
                 <div className="mt-3">
                   <span className="text-sm font-bold text-slate-800 block">
-                    Risk Level: {animal.riskLevel}
+                    {t("riskLevel")}: {animal.riskLevel}
                   </span>
                   <p className="text-xs font-semibold text-slate-600 mt-1">
                     {isHighRisk 
@@ -143,20 +201,20 @@ export default function FarmerAnimalDetails({ role = "farmer" }) {
             <div>
               <div className="flex items-center justify-between mb-2">
                 <div>
-                  <h3 className="font-bold text-slate-900 text-sm">Why Is Risk High?</h3>
-                  <p className="text-xs text-slate-500">Possible signals identified by AI</p>
+                  <h3 className="font-bold text-slate-900 text-sm">{t("whyIsRiskHigh")}</h3>
+                  <p className="text-xs text-slate-500">{t("possibleSignals")}</p>
                 </div>
                 <span className="text-xs bg-slate-100 font-semibold px-2.5 py-1 rounded-lg text-slate-600">
-                  Signals Checked
+                  {t("sensorData")}
                 </span>
               </div>
 
               <p className="text-xs text-slate-500 mb-3 italic">
-                These changes may be linked to higher risk:
+                {t("theseChangesLinked")}
               </p>
 
               <div className="space-y-2.5">
-                {animal.riskFactors.map((factor, idx) => {
+                {displaySignals.map((factor, idx) => {
                   const isHigh = factor.status === "High Risk";
                   const isMod = factor.status === "Needs Attention";
                   return (
@@ -170,19 +228,23 @@ export default function FarmerAnimalDetails({ role = "farmer" }) {
                         <div className="flex items-center gap-2">
                           <span className="text-xs font-bold text-slate-800">{factor.name}</span>
                           <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                            isHigh ? 'bg-rose-100 text-rose-700' : isMod ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'
+                            isHigh ? 'bg-rose-100 text-rose-700' : isMod ? 'bg-amber-100 text-amber-700' : 'bg-amber-100 text-amber-700'
                           }`}>
                             {factor.status}
                           </span>
                         </div>
-                        <p className="text-xs text-slate-500 mt-0.5">{factor.note}</p>
+                        {factor.note && (
+                          <p className="text-xs text-slate-500 mt-0.5">{factor.note}</p>
+                        )}
                       </div>
 
-                      <div className="sm:text-right">
-                        <span className="text-xs font-bold text-slate-800 bg-white px-2.5 py-1 rounded-lg border border-slate-200 inline-block">
-                          {factor.value}
-                        </span>
-                      </div>
+                      {factor.value && (
+                        <div className="sm:text-right">
+                          <span className="text-xs font-bold text-slate-800 bg-white px-2.5 py-1 rounded-lg border border-slate-200 inline-block">
+                            {factor.value}
+                          </span>
+                        </div>
+                      )}
                     </div>
                   );
                 })}
@@ -190,171 +252,100 @@ export default function FarmerAnimalDetails({ role = "farmer" }) {
             </div>
 
             <div className="mt-4 pt-3 border-t border-slate-100 text-xs text-slate-500">
-              Note: Early risk signs help farmers check cows before problems become severe.
+              {t("earlyRiskSignsNote")}
             </div>
           </div>
         </div>
 
-        {/* Animal Behaviour Section */}
-        <AnimalBehaviourCard behaviour={animal.behaviour} />
+        {/* DEMO 7-Day Risk Trend: 6 demo days + Today live Firebase (existing RiskTrendChart) */}
+        <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm">
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <div>
+              <h3 className="font-bold text-slate-900 text-sm">{t("sevenDayTrend")}</h3>
+              <p className="text-xs text-slate-500">{t("sevenDayTrendSub")}</p>
+            </div>
+            <span className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600">
+              {t("todayLive")}: {animal.riskScore}%
+            </span>
+          </div>
+          <RiskTrendChart data={sevenDayTrend} dataKey="risk" color="#f59e0b" height={240} />
+          <p className="mt-2 text-[11px] text-slate-400">
+            {t("demoHistoryNote")}: Day -6 → Day -1 • {t("todayLive")}: Firebase mastiguard/animals/{animal.id}/history
+          </p>
+        </div>
 
         {/* Milk Conductivity Explanation Box */}
-        <div className="bg-emerald-50/70 rounded-2xl p-5 border border-emerald-200 flex flex-col sm:flex-row items-start gap-4">
-          <div className="p-2.5 rounded-xl bg-emerald-100 text-emerald-800 shrink-0">
+        <div className="bg-amber-50/70 rounded-2xl p-5 border border-amber-200 flex flex-col sm:flex-row items-start gap-4">
+          <div className="p-2.5 rounded-xl bg-amber-100 text-amber-800 shrink-0">
             <HelpCircle className="w-5 h-5" />
           </div>
-          <div className="text-xs text-emerald-950 leading-relaxed">
-            <h4 className="font-bold text-sm text-emerald-900 mb-1">What is Milk Conductivity?</h4>
+          <div className="text-xs text-amber-950 leading-relaxed">
+            <h4 className="font-bold text-sm text-amber-900 mb-1">{t("whatIsConductivity")}</h4>
             <p>
-              Milk conductivity shows how easily electricity passes through milk. Changes in conductivity can be one sign of a health change.
+              {t("conductivityDesc1")}
             </p>
-            <p className="mt-1 text-emerald-800 font-medium">
-              Important: Milk conductivity is only one signal among several and not proof of illness.
+            <p className="mt-1 text-amber-800 font-medium">
+              {t("conductivityDesc2")}
             </p>
           </div>
         </div>
 
         {/* Milk and Sensor Information */}
         <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h3 className="font-bold text-slate-900 text-sm">Milk and Sensor Information</h3>
-            <div className="flex items-center gap-3 text-xs text-slate-500">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h3 className="font-bold text-slate-900 text-sm">{t("milkAndSensorInfo")}</h3>
+            <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500">
               <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-emerald-500"></span> Camera: Online
+                <span className="w-2 h-2 rounded-full bg-amber-500"></span> {t("cameraLabel")}: {t("online")}
               </span>
               <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-emerald-500"></span> Milk Sensor: Online
+                <span className="w-2 h-2 rounded-full bg-amber-500"></span> {t("milkSensorLabel")}: {t("online")}
               </span>
               <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-emerald-500"></span> Gateway: Online
+                <span className="w-2 h-2 rounded-full bg-amber-500"></span> {t("gatewayLabel")}: {t("online")}
               </span>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             <SensorCard
-              title="Milk Yield"
-              value={animal.milkYield}
-              unit="L/day"
+              title={t("milkYield")}
+              value={animal.milkYield ?? "—"}
+              unit="kg/day"
               icon="yield"
-              status={animal.milkYield < animal.previousYield * 0.85 ? "Needs Attention" : "Normal"}
-              note={`Baseline: ${animal.previousYield} L`}
+              status={animal.riskScore >= 70 ? "Needs Attention" : "Normal"}
             />
             <SensorCard
-              title="Milk Temperature"
-              value={animal.milkTemperature}
+              title={t("milkTemperature")}
+              value={animal.milkTemperature ?? "—"}
               unit="°C"
               icon="temp"
-              status={animal.milkTemperature >= 39.4 ? "High Risk" : "Normal"}
-              note="Normal: ~38.5°C"
+              status={animal.milkTemperature != null && animal.milkTemperature >= 39.4 ? "High Risk" : "Normal"}
             />
             <SensorCard
-              title="Milk Conductivity"
-              value={animal.milkConductivity}
+              title={t("milkConductivity")}
+              value={animal.milkConductivity ?? "—"}
               unit="mS/cm"
               icon="cond"
-              status={animal.milkConductivity >= 6.5 ? "High Risk" : animal.milkConductivity >= 5.7 ? "Needs Attention" : "Normal"}
-              note="Normal: < 5.5 mS"
+              status={animal.milkConductivity != null && animal.milkConductivity >= 6.5 ? "High Risk" : animal.milkConductivity != null && animal.milkConductivity >= 5.7 ? "Needs Attention" : "Normal"}
             />
             <SensorCard
-              title="Temperature"
-              value={animal.environmentalTemp}
-              unit=""
-              icon="temp"
-              status="Normal"
-              note="Shed temperature"
+              title={t("scc")}
+              value={animal.scc ?? "—"}
+              unit="x10³/mL"
+              icon="cond"
+              status={animal.scc != null && animal.scc >= 400 ? "High Risk" : animal.scc != null && animal.scc >= 200 ? "Needs Attention" : "Normal"}
             />
             <SensorCard
-              title="Humidity"
-              value={animal.humidity}
-              unit=""
+              title={t("lactose")}
+              value={animal.lactose ?? "—"}
+              unit="%"
               icon="yield"
-              status="Normal"
-              note="Shed humidity"
+              status={animal.lactose != null && animal.lactose < 4.3 ? "High Risk" : animal.lactose != null && animal.lactose < 4.6 ? "Needs Attention" : "Normal"}
             />
           </div>
         </div>
 
-        {/* Charts: Health Risk Forecast (7-14 Days) & Health Trend */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Health Risk Forecast */}
-          <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm">
-            <div className="flex items-center justify-between mb-2">
-              <div>
-                <h3 className="font-bold text-slate-900 text-sm">Health Risk Forecast (7–14 Days)</h3>
-                <p className="text-xs text-slate-500">
-                  {isHighRisk ? "Risk may increase over the next few days." : "Forecast shows stable risk."}
-                </p>
-              </div>
-              <span className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-100">
-                AI Forecast
-              </span>
-            </div>
-            <p className="text-[11px] text-slate-400 mb-3">
-              AI shows possible risk in advance. This is not a confirmed medical prediction.
-            </p>
-            <ForecastChart data={animal.forecast} />
-          </div>
-
-          {/* Health Trend */}
-          <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h3 className="font-bold text-slate-900 text-sm">Health Trend (Last 7 Days)</h3>
-                <p className="text-xs text-slate-500">Risk changes over the past week</p>
-              </div>
-              <span className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700">
-                7 Days
-              </span>
-            </div>
-            <RiskTrendChart data={animal.historyTrend} dataKey="risk" color={animal.riskScore >= 70 ? '#f43f5e' : '#10b981'} />
-          </div>
-        </div>
-
-        {/* Milk Yield and Milk Conductivity Trend */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="font-bold text-slate-900 text-sm">Milk Yield Trend (Liters)</h3>
-              <span className="text-xs text-slate-500 font-medium">Daily Production</span>
-            </div>
-            <MilkYieldChart data={animal.historyTrend} />
-          </div>
-
-          <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="font-bold text-slate-900 text-sm">Milk Conductivity Trend (mS/cm)</h3>
-              <span className="text-xs text-slate-500 font-medium">Milk Electrical Reading</span>
-            </div>
-            <ConductivityChart data={animal.historyTrend} />
-          </div>
-        </div>
-
-        {/* Animal History & Notes */}
-        <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm flex flex-col sm:flex-row items-start justify-between gap-4">
-          <div className="flex items-start gap-3">
-            <div className="p-2.5 rounded-xl bg-slate-100 text-slate-700 shrink-0">
-              <History className="w-5 h-5" />
-            </div>
-            <div>
-              <h4 className="font-bold text-slate-900 text-sm">Animal History</h4>
-              <p className="text-xs text-slate-600 mt-1">{animal.history}</p>
-              <p className="text-xs text-emerald-800 font-medium bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-lg mt-2 inline-block">
-                Note: {animal.notes}
-              </p>
-            </div>
-          </div>
-
-          <div className="self-end sm:self-auto shrink-0">
-            <Link
-              to={`${basePath}/alerts`}
-              className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition shadow-sm inline-flex items-center gap-1.5"
-            >
-              <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
-              <span>Check Alerts</span>
-            </Link>
-          </div>
-        </div>
       </div>
     </DashboardLayout>
   );

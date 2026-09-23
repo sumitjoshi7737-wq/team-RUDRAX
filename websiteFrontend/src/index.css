@@ -13,7 +13,7 @@ html {
   }
 
   body {
-    @apply bg-slate-50 text-slate-900 selection:bg-emerald-100 selection:text-emerald-900;
+    @apply bg-slate-50 text-slate-900 selection:bg-amber-100 selection:text-amber-900;
     overflow-x: hidden;
   }
 

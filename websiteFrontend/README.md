@@ -1,4 +1,4 @@
-# MastiGuard AI — AI-Based Early Mastitis Risk Monitoring
+# Gau Rakshak AI — AI-Based Early Mastitis Risk Monitoring
 
 A clean, modern, responsive frontend web platform built for farmers and veterinarians to monitor cattle health, review sensor telemetries, and access AI-based early mastitis risk predictions.
 
@@ -120,4 +120,4 @@ src/
 ---
 
 ## 🔒 Medical Disclaimer
-*MastiGuard AI provides risk monitoring and early probability insights based on sensor fusion. It serves as a clinical decision-support tool and does not replace professional veterinary diagnosis.*
+*Gau Rakshak AI provides risk monitoring and early probability insights based on sensor fusion. It serves as a clinical decision-support tool and does not replace professional veterinary diagnosis.*

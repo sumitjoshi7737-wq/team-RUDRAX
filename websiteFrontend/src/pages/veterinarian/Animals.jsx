@@ -1,24 +1,28 @@
-import React, { useState, useMemo } from 'react';
+﻿import React, { useState, useMemo } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
 import AnimalTable from '../../components/AnimalTable';
 import AnimalCard from '../../components/AnimalCard';
-import { animalsData } from '../../data/animals';
+import { LiveLoading, LiveError } from '../../components/LiveStatus';
+import { useLiveAnimals } from '../../hooks/useLiveAnimals';
+import { useLanguage } from '../../context/LanguageContext';
 import { Search, Filter, LayoutGrid, Table } from 'lucide-react';
 
 export default function VetAnimals() {
+  const { t } = useLanguage();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('All');
   const [viewMode, setViewMode] = useState('table');
+  // LIVE TODAY: mastiguard/animals/COW001-COW010/history newest by timestamp (onValue).
+  const { animals, loading, error } = useLiveAnimals();
 
   const filters = ['All', 'High Risk', 'Medium Risk', 'Low Risk', 'Healthy'];
 
   const filteredAnimals = useMemo(() => {
-    return animalsData.filter((animal) => {
+    return animals.filter((animal) => {
       const query = searchTerm.toLowerCase();
       const matchesSearch =
         animal.id.toLowerCase().includes(query) ||
-        animal.tag.toLowerCase().includes(query) ||
-        animal.breed.toLowerCase().includes(query);
+        animal.tag.toLowerCase().includes(query);
 
       let matchesFilter = true;
       if (selectedFilter === 'Healthy') {
@@ -33,10 +37,30 @@ export default function VetAnimals() {
 
       return matchesSearch && matchesFilter;
     });
-  }, [searchTerm, selectedFilter]);
+  }, [searchTerm, selectedFilter, animals]);
+
+  if (loading) {
+    return (
+      <DashboardLayout role="veterinarian" title={t("animals")}>
+        <div className="space-y-6">
+          <LiveLoading />
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <DashboardLayout role="veterinarian" title={t("animals")}>
+        <div className="space-y-6">
+          <LiveError message={error} />
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
-    <DashboardLayout role="veterinarian" title="Clinical Animal Patient Registry">
+    <DashboardLayout role="veterinarian" title={t("animals")}>
       <div className="space-y-6">
         {/* Top Search Bar */}
         <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -48,7 +72,7 @@ export default function VetAnimals() {
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search by Animal ID, Tag, or Breed..."
+              placeholder="Search by Animal ID..."
               className="w-full pl-10 pr-4 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
             />
           </div>
@@ -84,14 +108,14 @@ export default function VetAnimals() {
           </span>
           {filters.map((filter) => {
             const count = filter === 'All' 
-              ? animalsData.length
+              ? animals.length
               : filter === 'Healthy'
-              ? animalsData.filter(a => a.riskLevel === 'Healthy' || a.riskScore < 30).length
+              ? animals.filter(a => a.riskScore < 30).length
               : filter === 'Low Risk'
-              ? animalsData.filter(a => a.riskLevel === 'Low' || (a.riskScore >= 30 && a.riskScore < 45)).length
+              ? animals.filter(a => a.riskScore >= 30 && a.riskScore < 45).length
               : filter === 'Medium Risk'
-              ? animalsData.filter(a => a.riskLevel === 'Medium' || (a.riskScore >= 45 && a.riskScore < 70)).length
-              : animalsData.filter(a => a.riskLevel === 'High' || a.riskScore >= 70).length;
+              ? animals.filter(a => a.riskScore >= 45 && a.riskScore < 70).length
+              : animals.filter(a => a.riskScore >= 70).length;
 
             const isSelected = selectedFilter === filter;
 

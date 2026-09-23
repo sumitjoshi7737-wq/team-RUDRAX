@@ -1,12 +1,7 @@
 import React from 'react';
 
-export default function StatCard({ title, value, subtitle, icon: Icon, color = "emerald", trend }) {
+export default function StatCard({ title, value, subtitle, icon: Icon, color = "amber", trend }) {
   const colorMap = {
-    emerald: {
-      bg: "bg-emerald-50",
-      text: "text-emerald-600",
-      border: "border-emerald-100",
-    },
     rose: {
       bg: "bg-rose-50",
       text: "text-rose-600",
@@ -29,7 +24,7 @@ export default function StatCard({ title, value, subtitle, icon: Icon, color = "
     }
   };
 
-  const scheme = colorMap[color] || colorMap.emerald;
+  const scheme = colorMap[color] || colorMap.amber;
 
   return (
     <div className="bg-white rounded-xl p-5 border border-slate-200/80 shadow-sm hover:shadow transition-shadow">
@@ -48,7 +43,7 @@ export default function StatCard({ title, value, subtitle, icon: Icon, color = "
         <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
           <span>{subtitle}</span>
           {trend && (
-            <span className={`font-medium ${trend.isPositive ? 'text-emerald-600' : 'text-rose-600'}`}>
+            <span className={`font-medium ${trend.isPositive ? 'text-amber-600' : 'text-rose-600'}`}>
               {trend.text}
             </span>
           )}

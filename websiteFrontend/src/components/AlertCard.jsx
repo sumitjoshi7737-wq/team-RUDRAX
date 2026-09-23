@@ -1,8 +1,21 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link } from 'react-router-dom';
 import { AlertTriangle, AlertCircle, Cpu, Info, CheckCircle2, Clock, ChevronRight } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function AlertCard({ alert, onMarkRead, basePath = "/farmer" }) {
+  const { t } = useLanguage();
+  // Key-based rendering: COW ID (e.g. COW001) is injected via vars and never
+  // translated. Legacy plain-string alerts (title/description/time/actionRequired)
+  // still render as-is for backward compatibility.
+  const resolve = (key, vars, legacy) => (key ? t(key, vars) : (legacy ?? ""));
+  const categoryLabel = alert.categoryKey ? t(alert.categoryKey) : (alert.category ?? "");
+  const titleText = resolve(alert.titleKey, alert.titleVars, alert.title);
+  const descVars = { ...(alert.descVars || {}) };
+  if (alert.appendDemoNote && descVars.demoNote === undefined) descVars.demoNote = t("demoAlertOnly");
+  const descText = resolve(alert.descKey, descVars, alert.description);
+  const timeText = resolve(alert.timeKey, alert.timeVars, alert.time);
+  const actionText = resolve(alert.actionKey, alert.actionVars, alert.actionRequired);
   const getIconAndStyle = () => {
     switch (alert.severity) {
       case 'high':
@@ -49,34 +62,34 @@ export default function AlertCard({ alert, onMarkRead, basePath = "/farmer" }) {
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex flex-wrap items-center gap-2 min-w-0">
               <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${badgeBg}`}>
-                {alert.category}
+                {categoryLabel}
               </span>
               {alert.animalId && (
                 <span className="text-xs font-semibold text-slate-700 bg-white border border-slate-200 px-1.5 py-0.5 rounded max-w-full break-words">
-                  Animal #{alert.animalId}
+                  {t("animalHash", { id: alert.animalId })}
                 </span>
               )}
             </div>
 
             <div className="flex items-center gap-1 text-xs text-slate-400 shrink-0">
               <Clock className="w-3.5 h-3.5" />
-              <span>{alert.time}</span>
+              <span>{timeText}</span>
             </div>
           </div>
 
           <h4 className="text-sm font-semibold text-slate-800 mt-1.5 break-words">
-            {alert.title}
+            {titleText}
           </h4>
 
           <p className="text-xs text-slate-600 mt-1 leading-relaxed break-words">
-            {alert.description}
+            {descText}
           </p>
 
           <div className="mt-3 pt-2.5 border-t border-slate-200/60 flex flex-wrap items-center justify-between gap-2 text-xs">
-            {alert.actionRequired && (
+            {actionText && (
               <span className="text-slate-600 font-medium flex items-center gap-1 flex-wrap">
-                <span className="text-slate-400">Suggested Action:</span>
-                <span className="text-slate-800 font-semibold">{alert.actionRequired}</span>
+                <span className="text-slate-400">{t("suggestedAction")}:</span>
+                <span className="text-slate-800 font-semibold">{actionText}</span>
               </span>
             )}
 
@@ -84,9 +97,9 @@ export default function AlertCard({ alert, onMarkRead, basePath = "/farmer" }) {
               {alert.animalId && (
                 <Link
                   to={`${basePath}/animals/${alert.animalId}`}
-                  className="inline-flex items-center gap-1 text-emerald-600 hover:text-emerald-700 font-semibold"
+                  className="inline-flex items-center gap-1 text-amber-600 hover:text-amber-700 font-semibold"
                 >
-                  <span>View Animal</span>
+                  <span>{t("viewAnimal")}</span>
                   <ChevronRight className="w-3 h-3" />
                 </Link>
               )}

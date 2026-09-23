@@ -1,12 +1,13 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link } from 'react-router-dom';
 import DashboardLayout from '../../components/DashboardLayout';
 import StatCard from '../../components/StatCard';
 import RiskBadge from '../../components/RiskBadge';
 import AlertCard from '../../components/AlertCard';
 import RiskDistributionChart from '../../components/charts/RiskDistributionChart';
-import RiskTrendChart from '../../components/charts/RiskTrendChart';
-import { animalsData, getHerdSummary, herdRiskTrend } from '../../data/animals';
+import { LiveLoading, LiveError } from '../../components/LiveStatus';
+import { useLiveAnimals, getLiveHerdSummary } from '../../hooks/useLiveAnimals';
+import { useLanguage } from '../../context/LanguageContext';
 import { initialAlerts } from '../../data/alerts';
 import { 
   Stethoscope, 
@@ -19,31 +20,54 @@ import {
 } from 'lucide-react';
 
 export default function VeterinarianDashboard() {
-  const summary = getHerdSummary();
-  const attentionAnimals = animalsData
+  const { t } = useLanguage();
+  // LIVE TODAY: mastiguard/animals/COW001-COW010/history newest by timestamp (onValue, auto-updates).
+  const { animals, loading, error } = useLiveAnimals();
+  const summary = getLiveHerdSummary(animals);
+  const attentionAnimals = animals
     .filter(a => a.riskScore >= 45)
     .sort((a, b) => b.riskScore - a.riskScore)
     .slice(0, 3);
   const recentAlerts = initialAlerts.slice(0, 3);
 
+  if (loading) {
+    return (
+      <DashboardLayout role="veterinarian" title={t("vetDashboard")}>
+        <div className="space-y-6">
+          <LiveLoading />
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <DashboardLayout role="veterinarian" title={t("vetDashboard")}>
+        <div className="space-y-6">
+          <LiveError message={error} />
+        </div>
+      </DashboardLayout>
+    );
+  }
+
   return (
-    <DashboardLayout role="veterinarian" title="Veterinarian Dashboard">
+    <DashboardLayout role="veterinarian" title={t("vetDashboard")}>
       <div className="space-y-6">
         {/* Header */}
         <div className="bg-gradient-to-r from-indigo-900 to-slate-900 rounded-2xl p-5 sm:p-6 text-white shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
             <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-800 text-indigo-200 text-xs font-semibold mb-2">
               <Stethoscope className="w-3.5 h-3.5" />
-              <span>Veterinarian Portal</span>
+              <span>{t("vetPortal")}</span>
             </div>
             <h2 className="text-xl sm:text-2xl font-black tracking-tight">
-              Herd Health & Risk Review
+              {t("herdHealthReview")}
             </h2>
             <p className="text-xs sm:text-sm text-indigo-200/80 mt-1 max-w-xl">
-              AI shows {summary.highRisk} animals with high risk and {summary.mediumRisk} animals that need attention.
+              {t("riskSummary", { highRisk: summary.highRisk, needsAttention: summary.mediumRisk })}
             </p>
             <p className="text-xs sm:text-sm text-indigo-200/80 mt-2">
-              Milk yield is 4.2% lower than last week.
+              {t("milkYieldLowerWeek")}
             </p>
           </div>
 
@@ -52,7 +76,7 @@ export default function VeterinarianDashboard() {
               to="/veterinarian/animals"
               className="px-4 py-2 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white text-xs font-bold transition shadow-sm flex items-center gap-1.5"
             >
-              <span>View All Animals</span>
+              <span>{t("viewAllAnimals")}</span>
               <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>
@@ -61,79 +85,74 @@ export default function VeterinarianDashboard() {
         {/* 4 Stat Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard
-            title="Total Animals"
+            title={t("totalAnimals")}
             value={summary.total}
-            subtitle="Monitored on farm"
+            subtitle={t("monitoredOnFarm")}
             icon={Binary}
             color="slate"
           />
           <StatCard
-            title="Healthy"
+            title={t("healthy")}
             value={summary.healthy}
-            subtitle="Low risk"
+            subtitle={t("lowRisk")}
             icon={CheckCircle}
-            color="emerald"
+            color="amber"
           />
           <StatCard
-            title="Needs Attention"
+            title={t("needsAttention")}
             value={summary.mediumRisk}
-            subtitle="Medium risk"
+            subtitle={t("mediumRisk")}
             icon={AlertTriangle}
             color="amber"
           />
           <StatCard
-            title="High Risk"
+            title={t("highRisk")}
             value={summary.highRisk}
-            subtitle="Please check these animals"
+            subtitle={t("pleaseCheckAnimal")}
             icon={ShieldAlert}
             color="rose"
           />
         </div>
 
         {/* Animals That Need Attention */}
-        <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
+        <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm overflow-hidden">
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-bold text-slate-900 text-sm">Animals That Need Attention</h3>
+                <h3 className="font-bold text-slate-900 text-sm">{t("animalsNeedAttentionTitle")}</h3>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-700">
-                  {attentionAnimals.length} Animals
+                  {t("animalsCount", { count: attentionAnimals.length })}
                 </span>
               </div>
-              <p className="text-xs text-slate-500">Animals with changes in milk temperature, conductivity, or yield</p>
+              <p className="text-xs text-slate-500">{t("animalsWithChanges")}</p>
             </div>
             <Link
               to="/veterinarian/animals"
               className="text-xs font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1"
             >
-              <span>View All</span>
+              <span>{t("viewAllAnimals")}</span>
               <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-slate-700">
+            <table className="w-full min-w-[640px] text-left text-sm text-slate-700">
               <thead className="bg-slate-50/80 text-xs uppercase font-semibold text-slate-500 border-b border-slate-200">
                 <tr>
-                  <th className="px-4 py-3">Animal</th>
-                  <th className="px-4 py-3">Risk</th>
-                  <th className="px-4 py-3">Reason</th>
-                  <th className="px-4 py-3">Last Update</th>
-                  <th className="px-4 py-3 text-right">View</th>
+                  <th className="px-4 py-3">{t("animalId")}</th>
+                  <th className="px-4 py-3">{t("riskScore")}</th>
+                  <th className="px-4 py-3">{t("status")}</th>
+                  <th className="px-4 py-3">{t("lastUpdate")}</th>
+                  <th className="px-4 py-3 text-right">{t("action")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {attentionAnimals.map((animal) => (
                   <tr key={animal.id} className="hover:bg-slate-50/60 transition">
                     <td className="px-4 py-3.5">
-                      <div className="flex items-center gap-2">
-                        <span className="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-800 font-bold text-xs flex items-center justify-center">
-                          {animal.id}
-                        </span>
-                        <div>
-                          <span className="font-bold text-slate-900 text-sm block">{animal.id}</span>
-                          <span className="text-xs text-slate-400">{animal.tag} • {animal.breed}</span>
-                        </div>
+                      <div>
+                        <span className="font-bold text-slate-900 text-sm block whitespace-nowrap">{animal.id}</span>
+                        <span className="text-xs text-slate-400">SCC {animal.scc} x10³/mL</span>
                       </div>
                     </td>
                     <td className="px-4 py-3.5">
@@ -148,7 +167,7 @@ export default function VeterinarianDashboard() {
                       </span>
                     </td>
                     <td className="px-4 py-3.5 text-xs text-slate-500">
-                      Today 06:30 AM
+                      {t("today")}
                     </td>
                     <td className="px-4 py-3.5 text-right">
                       <Link
@@ -156,7 +175,7 @@ export default function VeterinarianDashboard() {
                         className="inline-flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-600 hover:text-white transition"
                       >
                         <Eye className="w-3.5 h-3.5" />
-                        <span>View</span>
+                        <span>{t("viewAnimal")}</span>
                       </Link>
                     </td>
                   </tr>
@@ -166,26 +185,19 @@ export default function VeterinarianDashboard() {
           </div>
         </div>
 
-        {/* Herd Health & Health Risk Trend */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
+        {/* Animal Health Chart (only chart on Dashboard) */}
+        <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm overflow-hidden">
+          <div>
+            <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
               <div>
-                <h3 className="font-bold text-slate-900 text-sm">Herd Health</h3>
-                <p className="text-xs text-slate-500">Herd risk breakdown</p>
+                <h3 className="font-bold text-slate-900 text-sm">{t("animalHealth")}</h3>
+                <p className="text-xs text-slate-500">{t("numberHealthyAtRisk")}</p>
               </div>
+              <span className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600">
+                {summary.total} {t("animals")}
+              </span>
             </div>
-            <RiskDistributionChart summary={summary} />
-          </div>
-
-          <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h3 className="font-bold text-slate-900 text-sm">Health Risk Trend</h3>
-                <p className="text-xs text-slate-500">Herd risk over the last 7 days</p>
-              </div>
-            </div>
-            <RiskTrendChart data={herdRiskTrend} color="#6366f1" />
+            <RiskDistributionChart summary={summary} animals={animals} />
           </div>
         </div>
 
@@ -193,14 +205,14 @@ export default function VeterinarianDashboard() {
         <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="font-bold text-slate-900 text-sm">Recent Alerts</h3>
-              <p className="text-xs text-slate-500">Alerts when an animal may need attention</p>
+              <h3 className="font-bold text-slate-900 text-sm">{t("recentAlerts")}</h3>
+              <p className="text-xs text-slate-500">{t("recentAlertsDescVet")}</p>
             </div>
             <Link
               to="/veterinarian/alerts"
               className="text-xs font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1"
             >
-              <span>View All Alerts</span>
+              <span>{t("viewAllAlerts")}</span>
               <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>

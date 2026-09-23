@@ -1,24 +1,26 @@
 import React from 'react';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function RiskBadge({ level, score }) {
-  let badgeStyle = "bg-emerald-100 text-emerald-900 border-emerald-200";
-  let dotStyle = "bg-emerald-600";
-  let label = level || "Healthy";
+  const { t } = useLanguage();
+  let badgeStyle = "bg-amber-100 text-amber-900 border-amber-200";
+  let dotStyle = "bg-amber-600";
+  let label = level || t("healthy");
 
-  const upper = String(label).toUpperCase();
+  const upper = String(level || "").toUpperCase();
 
   if (upper.includes("HIGH") || (typeof score === 'number' && score >= 70)) {
     badgeStyle = "bg-rose-100 text-rose-900 border-rose-200";
     dotStyle = "bg-rose-600 animate-pulse";
-    label = "High Risk";
-  } else if (upper.includes("ATTENTION") || upper.includes("MED") || (typeof score === 'number' && score >= 45)) {
+    label = t("highRisk");
+  } else if (upper.includes("ATTENTION") || upper.includes("MED") || upper.includes("NEEDS") || upper.includes("MODERATE") || (typeof score === 'number' && score >= 45)) {
     badgeStyle = "bg-amber-100 text-amber-900 border-amber-200";
     dotStyle = "bg-amber-600";
-    label = "Needs Attention";
+    label = t("needsAttention");
   } else {
-    badgeStyle = "bg-emerald-100 text-emerald-900 border-emerald-200";
-    dotStyle = "bg-emerald-600";
-    label = "Low Risk";
+    badgeStyle = "bg-amber-100 text-amber-900 border-amber-200";
+    dotStyle = "bg-amber-600";
+    label = t("lowRisk");
   }
 
   return (
