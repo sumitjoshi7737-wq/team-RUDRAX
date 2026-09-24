@@ -1,0 +1,18 @@
+{
+  "name": "Gau Rakshak",
+  "tagline": "AI-Based Early Mastitis Risk Forecasting System for Dairy Cows",
+  "purpose": "Gau Rakshak is an offline edge-AI system developed for dairy cows to forecast mastitis risk at an early stage, helping farmers take timely action before severe infection develops.",
+  "is_diagnosis_system": false,
+  "safety_policy": "Gau Rakshak is an early warning and risk forecasting system, NOT a confirmed medical diagnosis tool. It does not prescribe medicine or dosage. For high-risk alerts, a qualified veterinarian must examine the cow.",
+  "works_offline": true,
+  "components": {
+    "raspberry_pi_4": "Serves as the central offline edge processing hub, executing local AI models, knowledge queries, and hardware interfacing.",
+    "thermal_camera": "Captures infrared thermal images of the udder to detect subtle localized temperature increases indicative of early inflammation.",
+    "rfid": "Reads cow identification RFID tags to map health metrics and sensor readings to individual cows in the herd.",
+    "as7343": "11-channel spectral sensor used for optical spectral sensing of milk samples. Note: It is part of multi-sensor data fusion and is NOT a standalone diagnostic device.",
+    "dht11": "Measures ambient environmental temperature and relative humidity inside the shed. Note: It is strictly an environmental sensor and is NOT used to measure milk temperature.",
+    "esp32": "Acts as a low-power wireless sensor node collecting environmental and telemetry data.",
+    "solar_power": "Provides sustainable, off-grid power supply for continuous operation in rural dairy farms.",
+    "oled": "Provides local real-time status and alert displays directly on the hardware enclosure."
+  }
+}

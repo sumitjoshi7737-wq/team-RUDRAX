@@ -1,0 +1,33 @@
+{
+  "team_name": "RUDRAX",
+  "institution": "Geetanjali Institute of Technical Studies (GITS), Udaipur",
+  "department": "Department of Computer Science",
+  "location": "CII Lab, GITS Udaipur",
+  "members": [
+    {
+      "name": "Sumit Joshi",
+      "role": "Team Lead & Hardware Lead",
+      "contributions": "Project leadership, hardware integration, Raspberry Pi 4 configuration, and sensor setup."
+    },
+    {
+      "name": "Mahendra Kumar",
+      "role": "AI/ML Developer",
+      "contributions": "Machine learning model development, dataset processing, and mastitis risk forecasting algorithms."
+    },
+    {
+      "name": "Nandani Parashar",
+      "role": "Web Development & Designing",
+      "contributions": "UI/UX design, documentation design, and presentation graphics."
+    },
+    {
+      "name": "Uttam Soni",
+      "role": "Software Developer",
+      "contributions": "Software development, offline application logic, and system integration."
+    }
+  ],
+  "mentor": {
+    "name": "Latif Khan",
+    "role": "Project Mentor",
+    "contributions": "Technical guidance, architectural review, and research oversight."
+  }
+}

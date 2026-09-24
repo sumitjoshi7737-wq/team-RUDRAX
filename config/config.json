@@ -1,0 +1,35 @@
+{
+  "app_name": "Gau Rakshak Voice Assistant",
+  "tagline": "AI Early Mastitis Risk Forecasting System",
+  "team": "RUDRAX",
+  "institution": "Geetanjali Institute of Technical Studies (GITS), Udaipur",
+  "offline_mode": true,
+  "stt": {
+    "engine": "whisper",
+    "model_size": "tiny.en",
+    "language": "en",
+    "recording_duration": 5,
+    "sample_rate": 16000
+  },
+  "tts": {
+    "engine": "piper",
+    "voice_model": "en_US-lessac-medium",
+    "speech_rate": 150
+  },
+  "paths": {
+    "audio_input": "audio/input.wav",
+    "audio_output": "audio/response.wav",
+    "knowledge_dir": "knowledge",
+    "logs_dir": "logs"
+  },
+  "ui": {
+    "theme": "dark",
+    "bg_color": "#0f172a",
+    "card_bg": "#1e293b",
+    "accent_color": "#10b981",
+    "text_color": "#f8fafc",
+    "user_msg_color": "#38bdf8",
+    "gau_msg_color": "#34d399"
+  }
+}
+

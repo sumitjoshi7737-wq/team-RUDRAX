@@ -1,6 +1,12 @@
-@"
 node_modules/
 dist/
 .env
 .env.local
-"@ | Set-Content .gitignore
+
+__pycache__/
+*.pyc
+*.pyo
+venv/
+audio/*.wav
+logs/*.log
+.DS_Store
